@@ -1,28 +1,21 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import Card from './components/Card';
+import { fetchData } from './services/Requests';
 
 export default function App() {
   const [catsInfo, setCatsInfo] = useState([]);
-  const apiKey = 'bda5378-d59e-46cd-9bc4-2936630fde39';
-  const url = 'https://api.thecatapi.com/v1/breeds';
 
-  let urlImages = [];
+  const url = 'https://api.thecatapi.com/v1/breeds';
+  const apiKey = 'bda5378-d59e-46cd-9bc4-2936630fde39';
+  const options = { method: 'GET', headers: { 'x-api-key': apiKey } };
 
   useEffect(() => {
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        'x-api-key': apiKey,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCatsInfo(data);
-      })
-      .catch((error) => {
-        console.error('Error al obtener los datos:', error);
-      });
+    const getCatsInfo = async () => {
+      const data = await fetchData(url, options);
+      setCatsInfo(data);
+    };
+    getCatsInfo();
   }, []);
 
   return (
